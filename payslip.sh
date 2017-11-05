@@ -162,22 +162,19 @@ TAX_OFFICE='384'
 PAYEE_REF='XX12345' # is this per employee or per employer?
 
 echo 'Logging in...'
-set +e
-wget ${VERBOSE} --user="${USERNAME}" "${PASSWORD_ARG}" \
+set +e ; wget ${VERBOSE} --user="${USERNAME}" "${PASSWORD_ARG}" \
   --save-cookies 'cookies.txt' \
   --keep-session-cookies \
   --delete-after \
   ${NO_CHECK_CERT} \
-  'https://myfreedom.adp.com/essprotected/ukPortalLogin.asp'
+  'https://myfreedom.adp.com/essprotected/ukPortalLogin.asp' ; error=$? ; set -e
 
-error=$?
 if [ $error -ne 0 ]; then
     echo "Error logging in; wget exit code $error"
     echo "Run with -v for more information"
     exit $error
 fi
 
-set -e
 echo 'Obtaining session token...'
 TOKEN="$(wget ${VERBOSE} -O - \
   --load-cookies 'cookies.txt' \

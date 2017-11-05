@@ -183,7 +183,7 @@ TOKEN="$(wget ${VERBOSE} -O - \
   | grep sessionToken | cut -d "'" -f2)"
 
 if [ ${#TOKEN} = 0 ]; then
-   fail 'sessionToken not found in cookies.txt'
+   fail 'sessionToken not found. Check for CSCID and SMSESSION in cookies.txt'
 fi
 
 echo 'Downloading payslip...'

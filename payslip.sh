@@ -30,6 +30,9 @@ usage() {
   echo "  -o <file>, --output <file>"
   echo "      location to write the payslip pdf. if unspecified, program will default to payslip.pdf"
   echo
+  echo "  -n, --no-check-certificate"
+  echo "      connect insecurely. probably the wrong thing to do"
+  echo
   echo "  -v, --verbose"
   echo "      be verbose, show the HTTP calls being made"
   echo
@@ -59,6 +62,7 @@ fi
 PASSWORD_FILE='/dev/null'
 OUT_FILE='payslip.pdf'
 VERBOSE='-q'
+NO_CHECK_CERT=''
 
 while [ "${#}" -gt 0 ]
   do
@@ -89,6 +93,9 @@ while [ "${#}" -gt 0 ]
       ;;
     -v|--verbose)
       VERBOSE=''
+      ;;
+    -n|--no-check-certificate)
+      NO_CHECK_CERT='--no-check-certificate'
       ;;
     *)
       fail "Invalid option '${1}'. Use --help to see the valid options"
@@ -159,6 +166,7 @@ wget ${VERBOSE} --user="${USERNAME}" "${PASSWORD_ARG}" \
   --save-cookies 'cookies.txt' \
   --keep-session-cookies \
   --delete-after \
+  ${NO_CHECK_CERT} \
   'https://myfreedom.adp.com/essprotected/ukPortalLogin.asp'
 
 error=$?
@@ -171,12 +179,14 @@ fi
 echo 'Obtaining session token...'
 TOKEN="$(wget ${VERBOSE} -O - \
   --load-cookies 'cookies.txt' \
+  ${NO_CHECK_CERT} \
   'https://fress2.adp.com/core/coreControl.asp?ProductType=0' \
   | grep sessionToken | cut -d "'" -f2)"
 
 echo 'Downloading payslip...'
 wget ${VERBOSE} \
   --load-cookies 'cookies.txt' \
+  ${NO_CHECK_CERT} \
   --output-document="${OUT_FILE}" \
   --header='Referer: https://fress2.adp.com/eforms/PdfDisplay.aspx' \
 "https://fress2.adp.com/eforms/PdfBuilder.aspx?\

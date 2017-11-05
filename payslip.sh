@@ -1,4 +1,4 @@
-#!/bin/sh -u
+#!/bin/sh -eu
 PAY_DATE='27'
 
 PROGNAME="$(basename "${0}")"
@@ -162,6 +162,7 @@ TAX_OFFICE='384'
 PAYEE_REF='XX12345' # is this per employee or per employer?
 
 echo 'Logging in...'
+set +e
 wget ${VERBOSE} --user="${USERNAME}" "${PASSWORD_ARG}" \
   --save-cookies 'cookies.txt' \
   --keep-session-cookies \
@@ -176,6 +177,7 @@ if [ $error -ne 0 ]; then
     exit $error
 fi
 
+set -e
 echo 'Obtaining session token...'
 TOKEN="$(wget ${VERBOSE} -O - \
   --load-cookies 'cookies.txt' \

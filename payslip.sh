@@ -1,4 +1,4 @@
-#!/bin/sh -eu
+#!/bin/sh -u
 PAY_DATE='27'
 
 PROGNAME="$(basename "${0}")"
@@ -160,6 +160,13 @@ wget ${VERBOSE} --user="${USERNAME}" "${PASSWORD_ARG}" \
   --keep-session-cookies \
   --delete-after \
   'https://myfreedom.adp.com/essprotected/ukPortalLogin.asp'
+
+error=$?
+if [ $error -ne 0 ]; then
+    echo "Error logging in; wget exit code $error"
+    echo "Run with -v for more information"
+    exit $error
+fi
 
 echo 'Obtaining session token...'
 TOKEN="$(wget ${VERBOSE} -O - \

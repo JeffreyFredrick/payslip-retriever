@@ -182,7 +182,7 @@ TOKEN="$(wget ${VERBOSE} -O - \
   'https://fress2.adp.com/core/coreControl.asp?ProductType=0' \
   | grep sessionToken | cut -d "'" -f2)"
 
-if [ ${#TOKEN} = 0 ]; then
+if [ -z "${TOKEN}" ]; then
    fail 'sessionToken not found in repsonse from ADP.'
 fi
 
